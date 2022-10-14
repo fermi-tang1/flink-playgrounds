@@ -66,7 +66,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT \n  now() as time,\n  CAST(account_id AS CHAR(50)) as metric,\n  sum(amount) as value\nFROM \n  spend_report\nGROUP BY\n  account_id\n\n",
+          "rawSql": "select now() as time, CAST(m.account_id AS CHAR(50)) as metric, m.amount as value  from (select account_id, amount,log_ts, rank() over(partition by account_id order by log_ts desc) rank_seq  from spend_report) m where m.rank_seq = 1",
           "refId": "A",
           "select": [
             [
@@ -96,7 +96,7 @@
       "type": "gauge"
     }
   ],
-  "refresh": "5s",
+  "refresh": "1m",
   "schemaVersion": 25,
   "style": "dark",
   "tags": [],
